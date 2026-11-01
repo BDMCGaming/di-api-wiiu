@@ -4,6 +4,7 @@ import { connect as connectDatabase } from './database';
 import { LOG_INFO, LOG_SUCCESS } from './logger';
 
 import wiiuconfig from './services/api/infinity/config/v1/wiiu'
+import tickerv1 from '@/services/api/infinity/feed/v1/wiiu/ticker'
 
 import { config } from './config_manager'
 
@@ -19,6 +20,7 @@ const api = express.Router();
 
 LOG_INFO(`Setting up routes`)
 api.use(wiiuconfig);
+api.use(tickerv1);
 
 app.use(api);
 
