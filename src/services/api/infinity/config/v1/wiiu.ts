@@ -43,7 +43,7 @@ router.get('/infinity/config/v1/wiiu', async (request: express.Request, response
         "url_activity_stream": `${apiUrl}/disneynetwork/activitystream/v1`,
         "url_activity_stream_icons": `${cdnUrl}/infinity1/streamicons`,
         "url_activity_stream_links": `${apiUrl}`,
-        "url_geopip_locale": `${apiUrl}/infinity/geoip`,
+        "url_geoip_locale": `${apiUrl}/infinity/geoip`,
         // * I hope they don't mind us using their NATNEG servers.
         "url_natneg_domain": "openspy.net"
     }
