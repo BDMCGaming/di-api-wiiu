@@ -1,5 +1,5 @@
 import express from 'express';
-import { config } from '../../../../../config_manager';
+import { config } from '@/config_manager';
 
 const router: express.Router = express.Router()
 
