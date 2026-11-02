@@ -51,33 +51,33 @@ if (!config.mongoose.connection_string) {
 }
 
 if (!config.cdn.s3.endpoint) {
-	logger.warn('Failed to find s3 endpoint config. Disabling feature. To enable feature set the PN_BOSS_CONFIG_S3_ENDPOINT environment variable');
+	logger.warn('Failed to find s3 endpoint config. Disabling feature. To enable feature set the DI_CONFIG_S3_ENDPOINT environment variable');
 	disabledFeatures.s3 = true;
 }
 
 if (!config.cdn.s3.region) {
-	logger.warn('Failed to find s3 region config. Disabling feature. To enable feature set the PN_BOSS_CONFIG_S3_REGION environment variable');
+	logger.warn('Failed to find s3 region config. Disabling feature. To enable feature set the DI_CONFIG_S3_REGION environment variable');
 	disabledFeatures.s3 = true;
 }
 
 if (!config.cdn.s3.bucket) {
-	logger.warn('Failed to find s3 bucket config. Disabling feature. To enable feature set the PN_BOSS_CONFIG_S3_BUCKET environment variable');
+	logger.warn('Failed to find s3 bucket config. Disabling feature. To enable feature set the DI_CONFIG_S3_BUCKET environment variable');
 	disabledFeatures.s3 = true;
 }
 
 if (!config.cdn.s3.key) {
-	logger.warn('Failed to find s3 access key config. Disabling feature. To enable feature set the PN_BOSS_CONFIG_S3_ACCESS_KEY environment variable');
+	logger.warn('Failed to find s3 access key config. Disabling feature. To enable feature set the DI_CONFIG_S3_ACCESS_KEY environment variable');
 	disabledFeatures.s3 = true;
 }
 
 if (!config.cdn.s3.secret) {
-	logger.warn('Failed to find s3 secret key config. Disabling feature. To enable feature set the PN_BOSS_CONFIG_S3_ACCESS_SECRET environment variable');
+	logger.warn('Failed to find s3 secret key config. Disabling feature. To enable feature set the DI_CONFIG_S3_ACCESS_SECRET environment variable');
 	disabledFeatures.s3 = true;
 }
 
 if (disabledFeatures.s3) {
 	if (!config.cdn.disk_path) {
-		logger.error('s3 file storage is disabled and no CDN disk path was set. Set the PN_BOSS_CONFIG_CDN_DISK_PATH environment variable');
+		logger.error('s3 file storage is disabled and no CDN disk path was set. Set the DI_CONFIG_CDN_DISK_PATH environment variable');
         process.exit(0)
 	}
 
