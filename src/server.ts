@@ -7,6 +7,7 @@ import wiiuconfig from './services/api/infinity/config/v1/wiiu'
 import tickerv1 from '@/services/api/infinity/feed/v1/wiiu/ticker'
 import authentication from '@/services/api/coregames/did/v1/index'
 import geoiplocale from '@/services/api/capmon/getde'
+import privateugc from '@/services/api/infinity/ugc/v1/wiiu/private/index'
 
 import { config } from './config_manager'
 
@@ -28,6 +29,7 @@ api.use(wiiuconfig);
 api.use(tickerv1);
 api.use(authentication);
 api.use(geoiplocale);
+api.use(privateugc);
 
 app.use(api);
 

@@ -8,6 +8,9 @@ import { mTickerEntry } from '@/models/ticker-entry'
 import { tickerEntry } from '@/types/common/ticker-entry'
 import { HydratedAccountDocument } from '@/types/mongoose/account'
 import { Account } from '@/models/account'
+import { token as Token, HydratedTokenDocument } from '@/models/token'
+import { HydratedInfinity1ToyboxDocument } from '@/types/mongoose/infinity-1-toybox';
+import { Infinity1Toybox } from '@/models/infinity-1-toybox';
 
 const connection_string: string = config.mongoose.connection_string;
 
@@ -38,6 +41,14 @@ export async function getAccountByUsername(username: string): Promise<HydratedAc
 	});
 }
 
+export async function getAccountBySWID(swid: string): Promise<HydratedAccountDocument | null> {
+	verifyConnected();
+
+	return await Account.findOne<HydratedAccountDocument>({
+		swid: swid
+	});
+}
+
 export async function getAccountByEmail(email: string): Promise<HydratedAccountDocument | null> {
 	verifyConnected();
 
@@ -52,6 +63,20 @@ export async function getAccountByAssertionID(assertionID: string): Promise<Hydr
 	return await Account.findOne<HydratedAccountDocument>({
 		"connections.nintendo.id": assertionID
 	});
+}
+
+export async function getAccountByToken(token: string): Promise<HydratedAccountDocument | null> {
+	verifyConnected();
+
+	const tokenDoc = await Token.findOne<HydratedTokenDocument>({
+		token: token
+	});
+
+	if (tokenDoc === null) {
+		return null;
+	}
+
+	return await getAccountBySWID(tokenDoc.swid)
 }
 
 export async function doesUsernameExist(username: string): Promise<boolean> {

@@ -28,7 +28,7 @@ export async function createTokens(swid: string): Promise<[string, Date, string]
 
 	await token.create({
 		token: accessToken,
-
+		swid: swid,
 		info: {
             token_type: "access_token",
             issued: new Date(),
@@ -38,7 +38,7 @@ export async function createTokens(swid: string): Promise<[string, Date, string]
 
 	await token.create({
 		token: refreshToken,
-    
+		swid: swid,
 		info: {
             token_type: "refresh_token",
             issued: new Date(),
@@ -96,7 +96,7 @@ export async function uploadCDNAsset(key: string, data: Buffer): Promise<void> {
 }
 
 export async function writeLocalCDNFile(key: string, data: Buffer): Promise<void> {
-	const filePath: string = config.cdn.disk_path;
+	const filePath: string = path.join(config.cdn.disk_path, key);
 	const folder: string = path.dirname(filePath);
 
 	await fs.ensureDir(folder);
