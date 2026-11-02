@@ -56,34 +56,13 @@ router.post('/coregames/did/v1/authenticate', async (request: express.Request, r
             return response.json({"code": "110", "name": "APP.ACCOUNT_NOT_LINKED"})
         }
 
-        const accessToken = crypto.randomBytes(16).toString('hex');
-	    const newRefreshToken = crypto.randomBytes(20).toString('hex');
-
-	    await token.create({
-	    	token: crypto.createHash('sha256').update(accessToken).digest('hex'),
-        
-	    	info: {
-                token_type: "access_token",
-                issued: new Date(),
-	    		expires: new Date(Date.now() + (3600 * 1000))
-	    	}
-	    });
-
-        await token.create({
-	    	token: crypto.createHash('sha256').update(newRefreshToken).digest('hex'),
-        
-	    	info: {
-                token_type: "refresh_token",
-                issued: new Date(),
-	    		expires: new Date(Date.now() +  7 * 24 * 3600 * 1000)
-	    	}
-	    });
+        const [accessToken, expirationDate, refreshToken] = await createTokens(account.swid)
 
         // * Decompiling shows that there are additional fields for gamespy_challenge and gamespy_token. These do not get read on Wii U aside from being cleared
 
         return response.json({
             access_token: accessToken,
-            refresh_token: newRefreshToken,
+            refresh_token: refreshToken,
             swid: account.swid,
             first_name: account.first_name,
             last_name: account.last_name,

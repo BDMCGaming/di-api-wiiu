@@ -22,13 +22,13 @@ if (!disabledFeatures.s3) {
 
 export async function createTokens(swid: string): Promise<[string, Date, string]> {
 
-    const accessToken = crypto.randomBytes(16).toString('hex');
-    const expirationDate = new Date(Date.now() + (3600 * 1000))
-	const refreshToken = crypto.randomBytes(20).toString('hex');
+	const accessToken = crypto.createHash('sha256').update(crypto.randomBytes(16).toString('hex')).digest('hex');
+	const expirationDate = new Date(Date.now() + (3600 * 1000));
+	const refreshToken = crypto.createHash('sha256').update(crypto.randomBytes(16).toString('hex')).digest('hex');
 
 	await token.create({
-		token: crypto.createHash('sha256').update(accessToken).digest('hex'),
-    
+		token: accessToken,
+
 		info: {
             token_type: "access_token",
             issued: new Date(),
@@ -37,7 +37,7 @@ export async function createTokens(swid: string): Promise<[string, Date, string]
 	});
 
 	await token.create({
-		token: crypto.createHash('sha256').update(refreshToken).digest('hex'),
+		token: refreshToken,
     
 		info: {
             token_type: "refresh_token",
