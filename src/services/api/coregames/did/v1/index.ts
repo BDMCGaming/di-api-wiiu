@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import express from 'express';
 import { connection as databaseConnection, doesUsernameExist, doesEmailExist, getAccountByAssertionID } from '@/database'
-import { checkUsernameLength, checkUsernameValidCharacters, checkPasswordValid, getAgeFromDate } from '@/util'
+import { createTokens ,checkUsernameLength, checkUsernameValidCharacters, checkPasswordValid, getAgeFromDate } from '@/util'
 import IP2LocationManager from '@/ip2location'
 import { Account } from '@/models/account'
 import { token } from '@/models/token'
@@ -258,34 +258,13 @@ router.post('/coregames/did/v1/create', async (request: express.Request, respons
     // * we're too poor for emails (not implemented)
     // await sendConfirmationEmail(username)
         
-	const accessToken = crypto.randomBytes(16).toString('hex');
-	const newRefreshToken = crypto.randomBytes(20).toString('hex');
-
-	await token.create({
-		token: crypto.createHash('sha256').update(accessToken).digest('hex'),
-    
-		info: {
-            token_type: "access_token",
-            issued: new Date(),
-			expires: new Date(Date.now() + (3600 * 1000))
-		}
-	});
-
-    await token.create({
-		token: crypto.createHash('sha256').update(newRefreshToken).digest('hex'),
-    
-		info: {
-            token_type: "refresh_token",
-            issued: new Date(),
-			expires: new Date(Date.now() +  7 * 24 * 3600 * 1000)
-		}
-	});
+    const [accessToken, expirationDate, refreshToken] = await createTokens(swid)
 
     // * Decompiling shows that there are additional fields for gamespy_challenge and gamespy_token. These do not get read on Wii U aside from being cleared
 
     return response.json({
         access_token: accessToken,
-        refresh_token: newRefreshToken,
+        refresh_token: refreshToken,
         swid: swid,
         first_name: firstName,
         last_name: "",

@@ -20,6 +20,35 @@ if (!disabledFeatures.s3) {
 	});
 }
 
+export async function createTokens(swid: string): Promise<[string, Date, string]> {
+
+    const accessToken = crypto.randomBytes(16).toString('hex');
+    const expirationDate = new Date(Date.now() + (3600 * 1000))
+	const refreshToken = crypto.randomBytes(20).toString('hex');
+
+	await token.create({
+		token: crypto.createHash('sha256').update(accessToken).digest('hex'),
+    
+		info: {
+            token_type: "access_token",
+            issued: new Date(),
+			expires: new Date(Date.now() + (3600 * 1000))
+		}
+	});
+
+	await token.create({
+		token: crypto.createHash('sha256').update(refreshToken).digest('hex'),
+    
+		info: {
+            token_type: "refresh_token",
+            issued: new Date(),
+			expires: new Date(Date.now() +  7 * 24 * 3600 * 1000)
+		}
+	});
+
+	return [accessToken, expirationDate, refreshToken];
+}
+
 // * All functions and constants below are from PretendoNetwork/account
 
 export async function getCDNFileStream(key: string): Promise<Readable | fs.ReadStream | null> {
