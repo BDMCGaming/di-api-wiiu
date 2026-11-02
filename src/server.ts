@@ -5,6 +5,8 @@ import { LOG_INFO, LOG_SUCCESS } from './logger';
 
 import wiiuconfig from './services/api/infinity/config/v1/wiiu'
 import tickerv1 from '@/services/api/infinity/feed/v1/wiiu/ticker'
+import authentication from '@/services/api/coregames/did/v1/index'
+import geoiplocale from '@/services/api/capmon/getde'
 
 import { config } from './config_manager'
 
@@ -18,9 +20,11 @@ app.use(express.raw());
 
 const api = express.Router();
 
-LOG_INFO(`Setting up routes`)
+LOG_INFO(`Setting up routes`);
 api.use(wiiuconfig);
 api.use(tickerv1);
+api.use(authentication);
+api.use(geoiplocale);
 
 app.use(api);
 

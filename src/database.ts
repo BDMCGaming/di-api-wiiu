@@ -6,8 +6,8 @@ import { config } from '@/config_manager';
 import { HydratedTickerEntryDocument } from '@/types/mongoose/ticker-entry'
 import { mTickerEntry } from '@/models/ticker-entry'
 import { tickerEntry } from '@/types/common/ticker-entry'
-
-
+import { HydratedAccountDocument } from '@/types/mongoose/account'
+import { Account } from '@/models/account'
 
 const connection_string: string = config.mongoose.connection_string;
 
@@ -27,6 +27,58 @@ export function connection(): mongoose.Connection {
 export function verifyConnected(): void {
 	if (!connection()) {
 		throw new Error('Cannot make database requests without being connected');
+	}
+}
+
+export async function getAccountByUsername(username: string): Promise<HydratedAccountDocument | null> {
+	verifyConnected();
+
+	return await Account.findOne<HydratedAccountDocument>({
+		username: username
+	});
+}
+
+export async function getAccountByAssertionID(assertionID: string): Promise<HydratedAccountDocument | null> {
+	verifyConnected();
+
+	return await Account.findOne<HydratedAccountDocument>({
+		"connections.nintendo.id": assertionID
+	});
+}
+
+export async function doesUsernameExist(username: string): Promise<boolean> {
+	verifyConnected();
+
+	const account = await Account.findOne<HydratedAccountDocument>({
+		username: username
+	})
+
+	if (account) {
+		return true
+	} else {
+		return false
+	}
+}
+
+export async function doesEmailExist(username: string): Promise<boolean> {
+	verifyConnected();
+
+	let account = await Account.findOne<HydratedAccountDocument>({
+		"emails.parents_email": username
+	})
+
+	if (account) {
+		return true
+	}
+
+	account = await Account.findOne<HydratedAccountDocument>({
+		"emails.user_email": username
+	})
+
+	if (account) {
+		return true
+	} else {
+		return true
 	}
 }
 
