@@ -16,7 +16,10 @@ const app = express();
 LOG_INFO('Setting up Middleware');
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(express.raw());
+app.use(express.raw({
+	limit: '50mb',
+	type: 'multipart/form-data'
+}));
 
 const api = express.Router();
 

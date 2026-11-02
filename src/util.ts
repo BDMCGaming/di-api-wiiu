@@ -1,4 +1,78 @@
+import crypto from 'node:crypto';
+import path from 'node:path';
+import { GetObjectCommand, PutObjectCommand, S3 } from '@aws-sdk/client-s3';
+import fs from 'fs-extra';
+import express from 'express';
+import { config, disabledFeatures } from '@/config_manager';
+import { Readable } from 'node:stream';
+import { token } from '@/models/token'
+let s3: S3;
+
+if (!disabledFeatures.s3) {
+	s3 = new S3({
+		forcePathStyle: false,
+		endpoint: config.cdn.s3.endpoint,
+		region: config.cdn.s3.region,
+		credentials: {
+			accessKeyId: config.cdn.s3.key,
+			secretAccessKey: config.cdn.s3.secret
+		}
+	});
+}
+
 // * All functions and constants below are from PretendoNetwork/account
+
+export async function getCDNFileStream(key: string): Promise<Readable | fs.ReadStream | null> {
+	try {
+		if (disabledFeatures.s3) {
+			return await getLocalCDNFile(key);
+		} else {
+			const response = await s3.send(new GetObjectCommand({
+				Key: key,
+				Bucket: config.cdn.s3.bucket
+			}));
+
+			if (!response.Body) {
+				return null;
+			}
+
+			return response.Body as Readable;
+		}
+	} catch (error) {
+		return null;
+	}
+}
+
+export async function getLocalCDNFile(key: string): Promise<fs.ReadStream | null> {
+	const filePath: string = `${config.cdn.disk_path}/${key}`;
+
+	if (await !fs.exists(filePath)) {
+		return null;
+	}
+
+	return fs.createReadStream(filePath);
+}
+
+export async function uploadCDNAsset(key: string, data: Buffer): Promise<void> {
+	if (disabledFeatures.s3) {
+		await writeLocalCDNFile(key, data);
+	} else {
+		await s3.send(new PutObjectCommand({
+			Key: key,
+			Bucket: config.cdn.s3.bucket,
+			Body: data,
+			ACL: 'private'
+		}));
+	}
+}
+
+export async function writeLocalCDNFile(key: string, data: Buffer): Promise<void> {
+	const filePath: string = config.cdn.disk_path;
+	const folder: string = path.dirname(filePath);
+
+	await fs.ensureDir(folder);
+	await fs.writeFile(filePath, data);
+}
 
 const ACCOUNT_VALID_CHARACTERS_REGEX = /^[\w\-.]*$/;
 
