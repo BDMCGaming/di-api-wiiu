@@ -14,8 +14,6 @@ async function accountMiddleware(request: express.Request, response: express.Res
     const token = accessTokenHeader[1];
     let account: HydratedAccountDocument | null = null;
 
-    console.log(`${token}`);
-
     account = await getAccountByToken(token)
 
     if (!account) {

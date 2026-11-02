@@ -96,15 +96,9 @@ router.post('/infinity/ugc/v1/wiiu/private/toybox', accountMiddleware, multipart
     await toybox.generateID();
     await toybox.save();
 
-    console.log("made it past toybox saving")
-
     await uploadCDNAsset(`infinity-1-toyboxes/${toybox.creator}/${toybox.id}.bin`, request.file)
 
-    console.log("made it past toybox upload")
-
     await uploadCDNAsset(`infinty-1-toyboxes/screenshots/${toybox.id}/screenshot.bin`, request.screenshot)
-
-    console.log("made it past screenshot upload")
 
     return response.json({"_id": `${toybox.id}`, "name": name})
 });
