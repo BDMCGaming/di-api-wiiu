@@ -38,6 +38,14 @@ export async function getAccountByUsername(username: string): Promise<HydratedAc
 	});
 }
 
+export async function getAccountByEmail(email: string): Promise<HydratedAccountDocument | null> {
+	verifyConnected();
+
+	return await Account.findOne<HydratedAccountDocument>({
+		"email.user_email": email
+	});
+}
+
 export async function getAccountByAssertionID(assertionID: string): Promise<HydratedAccountDocument | null> {
 	verifyConnected();
 

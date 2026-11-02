@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import express from 'express';
-import { connection as databaseConnection, doesUsernameExist, doesEmailExist, getAccountByAssertionID } from '@/database'
+import { connection as databaseConnection, doesUsernameExist, doesEmailExist, getAccountByAssertionID, getAccountByUsername, getAccountByEmail } from '@/database'
 import { createTokens ,checkUsernameLength, checkUsernameValidCharacters, checkPasswordValid, getAgeFromDate } from '@/util'
 import IP2LocationManager from '@/ip2location'
 import { Account } from '@/models/account'
@@ -89,6 +89,73 @@ router.post('/coregames/did/v1/authenticate', async (request: express.Request, r
             last_name: account.last_name,
             username: account.username
         })
+    } else if (grantType === "password") {
+        const username = request.body.username as string;
+        const password = request.body.password as string;
+        const assertionPlatform = request.body.assertion_platform as string;
+        const assertionID = request.body.assertion_id as string;
+        const platformToken = request.body.platform_token as string;
+
+        if (!username) {
+            return response.json({"code": "1", "name": "INPUT.MISSING_DATA.USERNAME"})
+        }
+
+        if (!password) {
+            return response.json({"code": "1", "name": "INPUT.MISSING_DATA.PASSWORD"})
+        }
+
+        if (!assertionPlatform) {
+            return response.json({"code": "1", "name": "INPUT.MISSING_DATA.ASSERTION_PLATFORM"})
+        }
+        if (!assertionID) {
+            return response.json({"code": "1", "name": "INPUT.MISSING_DATA.ASSERTION_ID"})
+        }
+
+        if (!platformToken) {
+            return response.json({"code": "1", "name": "INPUT.MISSING_DATA.PLATFORM_TOKEN"})
+        }
+        // * Could we support other platforms? Probably. Are we going to? Probably not.
+        if (assertionPlatform !== "wiiu") {
+            return response.json({"code": "110", "name": "APP.ASSERTION_PLATFORM_UNKNOWN"})
+        }
+        // * Validate token here (if we had access to gRPC)
+        // if (blahblahblah === grpc error) {
+        //      return response.json({"code": "100", "name": "SECURITY.FAILED_PLATFORM_AUTHORIZATION"})
+        // }
+
+        let account;
+        
+        // * Scuffed check for an email, as the game can send either a username or an email in the username field for sign-in
+        if (username.includes('@') && username.includes('.')) {
+            account = await getAccountByEmail(username)
+        } else {
+            account = await getAccountByUsername(username)
+        }
+
+        if (!account){
+            return response.json({"code": "100", "name": "SECURITY.INVALID_USER"})
+        }
+
+        if (!await bcrypt.compare(password, account.password)) {
+            return response.json({"code": "100", "name": "SECURITY.INVALID_USER"})
+        }
+
+        account.connections.nintendo.id = assertionID
+
+        account.save()
+
+        const [accessToken, expirationDate, refreshToken] = await createTokens(account.swid)
+
+        return response.json({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            swid: account.swid,
+            first_name: account.first_name,
+            last_name: "",
+            username: username
+        })
+    } else {
+        return response.json({"code": "110", "name": "APP.GRANT_TYPE_UNKNOWN"})
     }
 });
 
