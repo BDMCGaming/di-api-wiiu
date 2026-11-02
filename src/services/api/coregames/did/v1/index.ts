@@ -321,9 +321,7 @@ router.post('/coregames/did/v1/create', async (request: express.Request, respons
         await session.abortTransaction();
         // * Likely not the right error code, but it displays an error at least
         return response.json({"code": "200", "name": "SYSTEM.UNRESPONSIVE.PROFILE"})
-    } 
-    // * we're too poor for emails (not implemented)
-    // await sendConfirmationEmail(username)
+    }
         
     const [accessToken, expirationDate, refreshToken] = await createTokens(swid)
 

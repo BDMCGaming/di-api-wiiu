@@ -45,10 +45,4 @@ accountSchema.method('generateSWID', async function generateSWID(): Promise<void
     this.swid = swid;
 })
 
-accountSchema.method('generateEmailValidationCode', async function generateEmailValidationCode(): Promise<void> {
-    const code = Math.random().toFixed(6).split('.')[1]; // * Dirty one-liner to generate numbers of 6 length and padded 0 (credit to PretenoNetwork/account)
-
-    this.identification.email_code = code;
-})
-
 export const Account = model<dAccount, accountModel>('account', accountSchema);
