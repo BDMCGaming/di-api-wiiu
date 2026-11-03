@@ -32,7 +32,7 @@ export async function createTokens(swid: string): Promise<[string, Date, string]
 		info: {
             token_type: "access_token",
             issued: new Date(),
-			expires: new Date(Date.now() + (3600 * 1000))
+			expires: new Date(Date.now() + 24 * 3600 * 1000)
 		}
 	});
 
@@ -49,7 +49,7 @@ export async function createTokens(swid: string): Promise<[string, Date, string]
 	return [accessToken, expirationDate, refreshToken];
 }
 
-// * All functions and constants below are from PretendoNetwork/account
+// * All functions and constants below are from PretendoNetwork's repositories (either account or rpg-maker-fes)
 
 export async function getCDNFileStream(key: string): Promise<Readable | fs.ReadStream | null> {
 	try {
