@@ -17,7 +17,7 @@ async function accountMiddleware(request: express.Request, response: express.Res
     account = await getAccountByToken(token)
 
     if (!account) {
-        response.status(403).send();
+        response.status(401).json({message: "Invalid token", access_token: token});
         return
     }
 

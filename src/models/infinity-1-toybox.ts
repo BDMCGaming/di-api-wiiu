@@ -19,7 +19,7 @@ const infinity1ToyboxSchema = new  Schema<dInfinity1Toybox, infinity1ToyboxModel
     },
     object_counts: {
         type: Map,
-        of: String
+        of: Number
     },
     screenshot: {
         width: Number,

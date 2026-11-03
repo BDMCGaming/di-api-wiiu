@@ -35,8 +35,7 @@ const accountSchema = new  Schema<dAccount, accountModel, dAccountMethods>({
         nintendo: {
             id: String, // * Nintendo PID in hexadecimal format
         }
-    },
-    age_band: String
+    }
 });
 
 accountSchema.method('generateSWID', async function generateSWID(): Promise<void> {
