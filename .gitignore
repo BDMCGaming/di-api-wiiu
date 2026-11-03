@@ -149,5 +149,5 @@ vite.config.ts.timestamp-*
 .turbo
 
 # Other
-
+cdn/
 ERRORS.txt
