@@ -17,8 +17,7 @@ router.get('/capmon/GetDE', async (request: express.Request, response: express.R
     const ip = request.ip
     const geoIPLocation = ip ? IP2LocationManager.lookup(ip) : undefined
     
-    return response.send(`geoDecoder.country.name = united states<br>geoDecoder.country.isoCode = usa`)
-    //return response.send(`geoDecoder.country.name = ${geoIPLocation?.countryLong}<br>geoDecoder.country.isoCode = ${geoIPLocation?.countryShort}`)
+    return response.send(`geoDecoder.country.name = ${geoIPLocation?.countryLong}<br>geoDecoder.country.isoCode = ${geoIPLocation?.countryShort}`)
 });
 
 export default router;

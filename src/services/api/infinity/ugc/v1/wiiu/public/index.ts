@@ -128,7 +128,7 @@ router.post('/infinity/ugc/v1/wiiu/public/toybox', accountMiddleware, multipartM
             compressed_size: compressedSize,
             name: name,
             description: desc,
-            creator: request.account?.swid,
+            creator: request.account?.username,
             zone: zone,
             locale: locale,
             last_updated: moment().unix().toString(),
