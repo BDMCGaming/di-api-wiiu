@@ -1,4 +1,3 @@
-import { dAccountMethods } from '@/types/mongoose/account';
 import { Schema, model } from 'mongoose';
 import type { Model, HydratedDocument } from 'mongoose';
 
@@ -20,7 +19,7 @@ export interface dTokenModel extends Model<dToken, dTokenQueryHelpers, dTokenMet
 
 export type HydratedTokenDocument = HydratedDocument<dToken, dTokenMethods>;
 
-const tokenSchema = new Schema<dToken, dTokenModel, dAccountMethods>({
+const tokenSchema = new Schema<dToken, dTokenModel, dTokenMethods>({
     token: String,
     swid: String,
     info: {
