@@ -75,24 +75,31 @@ export async function getCDNFileStream(key: string): Promise<Readable | fs.ReadS
 export async function getLocalCDNFile(key: string): Promise<fs.ReadStream | null> {
 	const filePath: string = `${config.cdn.disk_path}/${key}`;
 
-	if (await !fs.exists(filePath)) {
+	if (!await fs.exists(filePath)) {
 		return null;
 	}
 
 	return fs.createReadStream(filePath);
 }
 
-export async function uploadCDNAsset(key: string, data: Buffer): Promise<void> {
-	if (disabledFeatures.s3) {
-		await writeLocalCDNFile(key, data);
-	} else {
-		await s3.send(new PutObjectCommand({
-			Key: key,
-			Bucket: config.cdn.s3.bucket,
-			Body: data,
-			ACL: 'private'
-		}));
+export async function uploadCDNAsset(key: string, data: Buffer): Promise< boolean > {
+	
+	try {
+		if (disabledFeatures.s3) {
+			await writeLocalCDNFile(key, data);
+		} else {
+			await s3.send(new PutObjectCommand({
+				Key: key,
+				Bucket: config.cdn.s3.bucket,
+				Body: data,
+				ACL: 'private'
+			}));
+		}
+	} catch (error) {
+		return false;
 	}
+
+	return true
 }
 
 export async function writeLocalCDNFile(key: string, data: Buffer): Promise<void> {

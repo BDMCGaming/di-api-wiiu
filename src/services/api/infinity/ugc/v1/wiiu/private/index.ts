@@ -2,12 +2,13 @@ import express from 'express';
 import { HydratedInfinity1ToyboxDocument } from '@/types/mongoose/infinity-1-toybox'; 
 import { Infinity1Toybox } from '@/models/infinity-1-toybox';
 import { uploadCDNAsset, getCDNFileStream } from '@/util'
-import { getInfinity1ToyboxByID, getInfinity1UGCList } from '@/database';
+import { connection as databaseConnection, getInfinity1ToyboxByID, getInfinity1UGCList } from '@/database';
 import moment from 'moment';
 import accountMiddleware from '@/middleware/account';
 import multipartMiddleware from '@/middleware/multipart';
 import { Readable } from 'node:stream';
 import { ReadStream } from 'node:fs';
+import { LOG_ERROR } from '@/logger';
 
 const router: express.Router = express.Router();
 
@@ -117,27 +118,41 @@ router.post('/infinity/ugc/v1/wiiu/private/toybox', accountMiddleware, multipart
    
     // * At some point, we should try to validate the size with "orig_size". It doesn't seem to match up at all though.
 
-    const toybox: HydratedInfinity1ToyboxDocument = await Infinity1Toybox.create({
-        original_size: originalSize,
-        compressed_size: compressedSize,
-        name: name,
-        description: desc,
-        creator: request.account?.username,
-        zone: zone,
-        locale: locale,
-        last_updated: moment().unix().toString(),
-        creation_date: moment().unix().toString(),
-        object_counts: objectCounts,
-        screenshot: request.screenshotArgs,
-        scope: "Private"
-    })
+    let toybox: HydratedInfinity1ToyboxDocument;
+        
+    const session = await databaseConnection().startSession();
+    await session.startTransaction();
+    try {
+        toybox = await Infinity1Toybox.create({
+            original_size: originalSize,
+            compressed_size: compressedSize,
+            name: name,
+            description: desc,
+            creator: request.account?.swid,
+            zone: zone,
+            locale: locale,
+            last_updated: moment().unix().toString(),
+            creation_date: moment().unix().toString(),
+            object_counts: objectCounts,
+            screenshot: request.screenshotArgs,
+            scope: "Public"
+        })
 
-    await toybox.generateID();
-    await toybox.save();
+        await toybox.generateID();
 
-    await uploadCDNAsset(`infinity-1-toyboxes/${toybox.creator}/${toybox.id}.bin`, request.file)
+        await uploadCDNAsset(`infinity-1-toyboxes/${toybox.creator}/${toybox.id}.bin`, request.file)
 
-    await uploadCDNAsset(`infinty-1-toyboxes/screenshots/${toybox.id}/screenshot.bin`, request.screenshot)
+        await uploadCDNAsset(`infinity-1-toyboxes/screenshots/${toybox.id}/screenshot.bin`, request.screenshot)
+
+        await toybox.save({ session });
+        await session.commitTransaction();
+    } catch (error) {
+        LOG_ERROR('[POST] /infinity/ugc/v1/wiiu/private/toybox: ' + error);
+        
+        await session.abortTransaction();
+
+        return response.status(503).send();
+    }
 
     return response.json({"_id": `${toybox.id}`, "name": name})
 });
@@ -223,25 +238,38 @@ router.put('/infinity/ugc/v1/wiiu/private/toybox/:id', accountMiddleware, multip
         return response.status(403).send()
     }
 
-    toybox.updateOne({
-        original_size: originalSize,
-        compressed_size: compressedSize,
-        name: name,
-        description: desc,
-        creator: request.account?.username,
-        zone: zone,
-        locale: locale,
-        last_updated: moment().unix().toString(),
-        object_counts: objectCounts,
-        screenshot: request.screenshotArgs,
-        scope: "Private"
-    })
 
-    await toybox.save();
+    const session = await databaseConnection().startSession();
+    await session.startTransaction();
 
-    await uploadCDNAsset(`infinity-1-toyboxes/${toybox.creator}/${toybox.id}.bin`, request.file)
+    try {
+        toybox.updateOne({
+            original_size: originalSize,
+            compressed_size: compressedSize,
+            name: name,
+            description: desc,
+            creator: request.account?.username,
+            zone: zone,
+            locale: locale,
+            last_updated: moment().unix().toString(),
+            object_counts: objectCounts,
+            screenshot: request.screenshotArgs,
+            scope: "Private"
+        })
 
-    await uploadCDNAsset(`infinity-1-toyboxes/screenshots/${toybox.id}/screenshot.bin`, request.screenshot)
+        await uploadCDNAsset(`infinity-1-toyboxes/${toybox.creator}/${toybox.id}.bin`, request.file)
+
+        await uploadCDNAsset(`infinity-1-toyboxes/screenshots/${toybox.id}/screenshot.bin`, request.screenshot)
+
+        await toybox.save({ session });
+        await session.commitTransaction();
+    } catch (error) {
+        LOG_ERROR(`[PUT] /infinity/ugc/v1/wiiu/private/toybox/${toybox.id}:` + error);
+        
+        await session.abortTransaction();
+
+        return response.status(503).send();
+    }
 
     return response.json({"_id": `${toybox.id}`, "name": name})
 });
