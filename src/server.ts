@@ -9,6 +9,7 @@ import authentication from '@/services/api/coregames/did/v1/index'
 import geoiplocale from '@/services/api/capmon/getde'
 import privateugc from '@/services/api/infinity/ugc/v1/wiiu/private/index'
 import publicugc from '@/services/api/infinity/ugc/v1/wiiu/public/index'
+import stubs from '@/services/api/infinity/stubs'
 
 import { config } from './config_manager'
 
@@ -31,7 +32,8 @@ api.use(tickerv1);
 api.use(authentication);
 api.use(geoiplocale);
 api.use(privateugc);
-api.use(publicugc)
+api.use(publicugc);
+api.use(stubs);
 
 app.use(api);
 
