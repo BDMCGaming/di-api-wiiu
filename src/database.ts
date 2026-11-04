@@ -13,6 +13,7 @@ import { HydratedInfinity1ToyboxDocument } from '@/types/mongoose/infinity-1-toy
 import { infinity1ToyboxModel } from '@/types/mongoose/infinity-1-toybox';
 import { Infinity1Toybox } from '@/models/infinity-1-toybox';
 import { userInfinity1Toybox } from '@/types/common/infinity-1-toybox';
+import { HydratedInfinity1ProfileDocument, Infinity1Profile } from '@/models/infinity-1-profile';
 
 const connection_string: string = config.mongoose.connection_string;
 
@@ -218,4 +219,12 @@ export async function getInfinity1ToyboxByID(id: string): Promise<HydratedInfini
 	const toybox = Infinity1Toybox.findOne<HydratedInfinity1ToyboxDocument>({ id: id })
 
 	return toybox
+}
+
+export async function getInfinity1ProfileBySWID(swid: string): Promise<HydratedInfinity1ProfileDocument | null> {
+	verifyConnected();
+
+	const profile = Infinity1Profile.findOne<HydratedInfinity1ProfileDocument>({ swid: swid})
+
+	return profile
 }

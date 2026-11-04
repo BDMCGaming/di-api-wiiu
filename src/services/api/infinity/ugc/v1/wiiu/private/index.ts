@@ -164,7 +164,7 @@ router.post('/infinity/ugc/v1/wiiu/private/toybox', accountMiddleware, multipart
  */
 
 router.put('/infinity/ugc/v1/wiiu/private/toybox/:id', accountMiddleware, multipartMiddleware, async (request: express.Request, response: express.Response) => {
-    const id = request.query.id as string;
+    const id = request.params.id as string;
     
     const name = request.body.args.name as string;
     const desc = request.body.args.desc as string;
@@ -229,6 +229,8 @@ router.put('/infinity/ugc/v1/wiiu/private/toybox/:id', accountMiddleware, multip
     // * At some point, we should try to validate the size with "orig_size". It doesn't seem to match up at all though.
 
     const toybox = await getInfinity1ToyboxByID(id);
+
+    console.log`${id}`
 
     if (!toybox) {
         return response.status(204).send();

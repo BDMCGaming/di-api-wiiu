@@ -165,7 +165,7 @@ router.post('/infinity/ugc/v1/wiiu/public/toybox', accountMiddleware, multipartM
  */
 
 router.put('/infinity/ugc/v1/wiiu/public/toybox/:id', accountMiddleware, multipartMiddleware, async (request: express.Request, response: express.Response) => {
-    const id = request.query.id as string;
+    const id = request.params.id as string;
     
     const name = request.body.args.name as string;
     const desc = request.body.args.desc as string;
