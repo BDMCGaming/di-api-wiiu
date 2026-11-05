@@ -111,7 +111,7 @@ export async function writeLocalCDNFile(key: string, data: Buffer): Promise<void
     await fs.writeFile(filePath, data);
 }
 
-const ACCOUNT_VALID_CHARACTERS_REGEX = /^[\w\-.]*$/;
+const ACCOUNT_VALID_CHARACTERS_REGEX = /^[\w_]*$/;
 
 // * This sucks
 const PASSWORD_WORD_OR_NUMBER_REGEX = /(?=.*[a-zA-Z])(?=.*\d).*/;
@@ -121,7 +121,7 @@ const PASSWORD_REPEATED_CHARACTER_REGEX = /(.)\1\1/;
 
 // * Ensures the username is not too short or too long
 export function checkUsernameLength(username: string): boolean {
-    return username.length >= 1 && username.length <= 32;
+    return username.length >= 3 && username.length <= 32;
 }
 
 // * Ensures that the username does not have any invalid character

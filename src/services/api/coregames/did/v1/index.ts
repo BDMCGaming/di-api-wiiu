@@ -200,7 +200,7 @@ router.post('/coregames/did/v1/create', async (request: express.Request, respons
     const firstName = request.body.first_name;
     const username = request.body.username;
     const dateOfBirth = request.body.date_of_birth;
-    const email = request.body.parents_email || request.body.email;
+    const email = request.body.parents_email;
     const region = request.body.region;
     const password = request.body.password;
     const gender = request.body.gender;
@@ -219,15 +219,15 @@ router.post('/coregames/did/v1/create', async (request: express.Request, respons
         return response.status(400).json({ code: '1', name: 'INPUT.MISSING_DATA.USERNAME' });
     }
 
-    if (!checkUsernameLength) {
+    if (!checkUsernameLength(username)) {
         return response.status(400).json({ code: '1', name: 'APP.INVALID_USERNAME_SIZE' });
     }
 
-    if (!checkUsernameValidCharacters) {
+    if (!checkUsernameValidCharacters(username)) {
         return response.status(400).json({ code: '1', name: 'APP.INVALID_USERNAME' });
     }
 
-    if (!doesUsernameExist(username)) {
+    if (await doesUsernameExist(username)) {
         return response.status(400).json({ code: '2002', name: 'APP.USERNAME_ALREADY_EXISTS' });
     }
 
@@ -270,7 +270,7 @@ router.post('/coregames/did/v1/create', async (request: express.Request, respons
         return response.status(400).json({ code: '1', name: 'APP.INVALID_EMAIL_SIZE' });
     }
 
-    if (!doesEmailExist(email)) {
+    if (await doesEmailExist(email)) {
         return response.status(400).json({ code: '2002', name: 'APP.EMAIL_ALREADY_EXISTS' });
     }
 
