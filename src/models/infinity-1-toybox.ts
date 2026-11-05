@@ -1,6 +1,5 @@
 import { Schema, Types, model } from 'mongoose'
-import uniqueValidator from 'mongoose-unique-validator';
-import { HydratedInfinity1ToyboxDocument, dInfinity1Toybox, dInfinity1ToyboxMethods, infinity1ToyboxModel } from '@/types/mongoose/infinity-1-toybox'
+import { dInfinity1Toybox, dInfinity1ToyboxMethods, infinity1ToyboxModel } from '@/types/mongoose/infinity-1-toybox'
 
 const infinity1ToyboxSchema = new  Schema<dInfinity1Toybox, infinity1ToyboxModel, dInfinity1ToyboxMethods>({
     id: String,
@@ -32,7 +31,7 @@ const infinity1ToyboxSchema = new  Schema<dInfinity1Toybox, infinity1ToyboxModel
 })
 
 infinity1ToyboxSchema.method('generateID', async function generateID(): Promise<void> {
-    // * No idea what the ID originally was, but hopefully a GUID will work.
+    // * No idea what the ID originally was, but a GUID will work.
     const id = crypto.randomUUID();
     this.id = id;
 })

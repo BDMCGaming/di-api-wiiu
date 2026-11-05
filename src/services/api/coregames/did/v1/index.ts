@@ -204,7 +204,6 @@ router.post('/coregames/did/v1/create', async (request: express.Request, respons
     const region = request.body.region;
     const password = request.body.password
     const gender = request.body.gender;
-    let marketingOptIn = request.body.marketing_optin as boolean;
     const language = request.body.language
     const assertionPlatform = request.body.assertion_platform
     const assertionID = request.body.assertion_id
@@ -274,6 +273,10 @@ router.post('/coregames/did/v1/create', async (request: express.Request, respons
         return response.status(400).json({"code": "1", "name": "APP.INVALID_EMAIL_SIZE"})
     }
 
+    if (!doesEmailExist(email)) {
+        return response.status(400).json({"code": "2002", "name": "APP.EMAIL_ALREADY_EXISTS"})
+    }
+
     if (!region) {
         return response.status(400).json({"code": "1", "name": "INPUT.MISSING_DATA.REGION"})
     }
@@ -284,10 +287,6 @@ router.post('/coregames/did/v1/create', async (request: express.Request, respons
 
     if (!checkPasswordValid) {
         return response.status(400).json({"code": "1", "name": "APP.INVALID_PASSWORD"})
-    }
-
-    if (!marketingOptIn) {
-        marketingOptIn = false
     }
 
     if (!assertionPlatform) {
@@ -311,7 +310,6 @@ router.post('/coregames/did/v1/create', async (request: express.Request, respons
     // if (blahblahblah === grpc error) {
     //      return response.json({"code": "100", "name": "SECURITY.FAILED_PLATFORM_AUTHORIZATION"})
     // }
-    const creationDate = moment().format('YYYY-MM-DDTHH:MM:SS');
     
     let account: HydratedAccountDocument;
     let swid: string;

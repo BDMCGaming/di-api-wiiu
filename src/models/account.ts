@@ -1,7 +1,6 @@
 import crypto from 'node:crypto';
-import { Schema, Types, model } from 'mongoose';
-import uniqueValidator from 'mongoose-unique-validator';
-import { LOG_ERROR, LOG_WARN } from '@/logger';
+import { Schema, model } from 'mongoose';
+
 import type { dAccount, dAccountMethods, accountModel } from '@/types/mongoose/account'
 
 const accountSchema = new  Schema<dAccount, accountModel, dAccountMethods>({

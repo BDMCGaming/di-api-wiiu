@@ -1,12 +1,4 @@
 import express from 'express';
-import { connection as databaseConnection, doesUsernameExist, doesEmailExist, getAccountByAssertionID, getAccountByUsername, getAccountByEmail, getAccountByToken } from '@/database'
-import { createTokens ,checkUsernameLength, checkUsernameValidCharacters, checkPasswordValid, getAgeFromDate } from '@/util'
-import IP2LocationManager from '@/ip2location'
-import { Account } from '@/models/account'
-import { HydratedAccountDocument } from '@/types/mongoose/account'
-import moment from 'moment'
-import bcrypt from 'bcrypt'
-import { LOG_ERROR } from '@/logger';
 
 const router: express.Router = express.Router();
 

@@ -1,7 +1,6 @@
-import crypto from 'node:crypto';
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
-import { LOG_INFO, LOG_SUCCESS, LOG_ERROR } from './logger';
+
+import { LOG_ERROR } from './logger';
 import { config } from '@/config_manager';
 import { HydratedTickerEntryDocument } from '@/types/mongoose/ticker-entry'
 import { mTickerEntry } from '@/models/ticker-entry'
@@ -10,7 +9,6 @@ import { HydratedAccountDocument } from '@/types/mongoose/account'
 import { Account } from '@/models/account'
 import { token as Token, HydratedTokenDocument } from '@/models/token'
 import { HydratedInfinity1ToyboxDocument } from '@/types/mongoose/infinity-1-toybox';
-import { infinity1ToyboxModel } from '@/types/mongoose/infinity-1-toybox';
 import { Infinity1Toybox } from '@/models/infinity-1-toybox';
 import { userInfinity1Toybox } from '@/types/common/infinity-1-toybox';
 import { HydratedInfinity1ProfileDocument, Infinity1Profile } from '@/models/infinity-1-profile';
@@ -143,7 +141,7 @@ export async function getTickerEntries(page: number, pageSize: number): Promise<
 		}
 
 		return { items: TickerEntries };
-	} catch (error: any) {
+	} catch (error) {
 		LOG_ERROR(`Error while fetching news entries: $(error)`);
 		return null
 	}
@@ -155,7 +153,7 @@ export async function getInfinity1UGCList(page: number, pageSize: number, userna
 	
 	if (scope == "Private") {
 		try {
-			const queryResults: HydratedInfinity1ToyboxDocument[] = await Infinity1Toybox.find().skip(pageSize * (page - 1)).limit(pageSize).where({creator: username, scope: "Private"}).exec()
+			queryResults = await Infinity1Toybox.find().skip(pageSize * (page - 1)).limit(pageSize).where({creator: username, scope: "Private"}).exec()
 		
 			let toyboxes: userInfinity1Toybox[] = []
 
@@ -174,13 +172,13 @@ export async function getInfinity1UGCList(page: number, pageSize: number, userna
 			}
 			return { items: toyboxes }
 		}
-		catch (error: any) {
+		catch (error) {
 			LOG_ERROR(`Error while fetching private toyboxes of user ${username}: ${error}`);
 			return null
 		}
 	} else if (scope === "Public") {
 		try {
-			const queryResults: HydratedInfinity1ToyboxDocument[] = await Infinity1Toybox.find().skip(pageSize * (page - 1)).limit(pageSize).where({ scope: "Public"}).exec()
+			queryResults = await Infinity1Toybox.find().skip(pageSize * (page - 1)).limit(pageSize).where({ scope: "Public"}).exec()
 		
 			let toyboxes: userInfinity1Toybox[] = []
 
@@ -203,7 +201,7 @@ export async function getInfinity1UGCList(page: number, pageSize: number, userna
 			}
 			return { items: toyboxes }
 		}
-		catch (error: any) {
+		catch (error) {
 			LOG_ERROR(`Error while fetching private toyboxes of user ${username}: ${error}`);
 			return null
 		}
@@ -224,7 +222,7 @@ export async function getInfinity1ToyboxByID(id: string): Promise<HydratedInfini
 export async function getInfinity1ProfileBySWID(swid: string): Promise<HydratedInfinity1ProfileDocument | null> {
 	verifyConnected();
 
-	const profile = Infinity1Profile.findOne<HydratedInfinity1ProfileDocument>({ swid: swid})
+	const profile = Infinity1Profile.findOne<HydratedInfinity1ProfileDocument>({ swid: swid })
 
 	return profile
 }
