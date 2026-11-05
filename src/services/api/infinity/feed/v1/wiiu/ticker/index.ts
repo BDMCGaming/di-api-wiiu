@@ -1,4 +1,4 @@
-import express from 'express';
+import express from 'express';;
 
 import { getTickerEntries } from '@/database';
 
@@ -14,23 +14,23 @@ const router: express.Router = express.Router();
 
 router.get('/infinity/feed/v1/wiiu/ticker/:region/:language', async (request: express.Request, response: express.Response) => {
     if (request.query.page === undefined || request.query.page_size === undefined) {
-        response.json({ code: '1', name: 'INPUT.MISSING_DATA.UNKNOWN' });
-    }
-
+        response.json({"code": "1", "name": "INPUT.MISSING_DATA.UNKNOWN"})
+    };
+    
     const pageNum: number = Number(request.query.page);
     const pageSize: number = Number(request.query.page_size);
 
-    const TickerEntries = await getTickerEntries(pageNum, pageSize);
+    const TickerEntries = await getTickerEntries(pageNum, pageSize)
 
     if (TickerEntries === null) {
-        response.json({});
+        response.json({})
     }
 
     response.json({
-        page: pageNum,
-        page_count: 1,
-        TickerEntries,
-    });
+        "page": pageNum,
+        "page_count": 1,
+        TickerEntries
+    })
 });
 
 export default router;

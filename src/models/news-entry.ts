@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { dTickerEntry, dTickerEntryMethods, TickerEntryModel } from '@/types/mongoose/ticker-entry';
+import { HydratedTickerEntryDocument, dTickerEntry, dTickerEntryMethods, TickerEntryModel } from '@/types/mongoose/ticker-entry';
 
 const TickerEntrySchema = new mongoose.Schema<dTickerEntry, TickerEntryModel, dTickerEntryMethods>({
     title: String,

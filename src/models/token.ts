@@ -8,7 +8,7 @@ export interface dToken {
         token_type: string;
         issued: Date;
         expires: Date;
-    };
+    }
 }
 
 export interface dTokenMethods {}
@@ -25,12 +25,12 @@ const tokenSchema = new Schema<dToken, dTokenModel, dTokenMethods>({
     info: {
         token_type: String,
         issued: Date,
-        expires: Date,
-    },
+        expires: Date
+    }
 });
 
-tokenSchema.index({ 'info.expires': 1 }, { expireAfterSeconds: 0 });
+tokenSchema.index({ 'info.expires': 1}, { expireAfterSeconds: 0 });
 tokenSchema.index({ token: 1 });
-tokenSchema.index({ swid: 1 });
+tokenSchema.index({ swid: 1});
 
-export const token = model<dToken, dTokenModel>('Token', tokenSchema);
+export const token = model<dToken, dTokenModel>('Token', tokenSchema)

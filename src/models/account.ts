@@ -1,11 +1,13 @@
 import crypto from 'node:crypto';
-import { Schema, model } from 'mongoose';
-import type { dAccount, dAccountMethods, accountModel } from '@/types/mongoose/account';
+import { Schema, Types, model } from 'mongoose';
+import uniqueValidator from 'mongoose-unique-validator';
+import { LOG_ERROR, LOG_WARN } from '@/logger';
+import type { dAccount, dAccountMethods, accountModel } from '@/types/mongoose/account'
 
-const accountSchema = new Schema<dAccount, accountModel, dAccountMethods>({
+const accountSchema = new  Schema<dAccount, accountModel, dAccountMethods>({
     swid: {
         type: String,
-        unique: true,
+        unique: true
     },
     first_name: String,
     middle_name: String,
@@ -20,20 +22,20 @@ const accountSchema = new Schema<dAccount, accountModel, dAccountMethods>({
     email: {
         user_email: String,
         email_verified: Boolean,
-        email_verified_date: String,
+        email_verified_date: String
     },
     gender: String,
     region: String,
     language: String,
     marketing: Number,
     identification: {
-        email_code: String,
+        email_code: String
     },
     connections: {
         nintendo: {
             id: String, // * Nintendo PID in hexadecimal format
-        },
-    },
+        }
+    }
 });
 
 accountSchema.method('generateSWID', async function generateSWID(): Promise<void> {
@@ -41,6 +43,6 @@ accountSchema.method('generateSWID', async function generateSWID(): Promise<void
 
     const swid = crypto.randomUUID();
     this.swid = swid;
-});
+})
 
 export const Account = model<dAccount, accountModel>('account', accountSchema);

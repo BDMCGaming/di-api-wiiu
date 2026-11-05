@@ -1,65 +1,57 @@
 {
-    "name": "disney-infinity-api-wiiu",
-    "version": "1.0.0",
-    "description": "A revival for the Disney API used by Disney Infinity on Wii U",
-    "main": "dist/server.js",
-    "engines": {
-        "node": "^24.22.1"
-    },
-    "scripts": {
-        "build": "npm run clean && tsc && tsc-alias && npm run download-geoip-db",
-        "build-no-clean": "tsc && tsc-alias && npm run download-geoip-db",
-        "start": "node dist/server.js",
-        "clean": "rimraf ./dist",
-        "download-geoip-db": "node ./scripts/download-ip2location-databases.js",
-        "lint": "npx eslint src"
-    },
-    "repository": {
-        "type": "git",
-        "url": "github.com/BDMCGaming/di-api-wiiu"
-    },
-    "author": "BDMCGaming",
-    "license": "AGPL-3.0",
-    "dependencies": {
-        "@aws-sdk/client-s3": "^3.1161.0",
-        "@types/express": "^5.0.6",
-        "@types/fs-extra": "^11.0.4",
-        "@types/morgan": "^1.9.10",
-        "bcrypt": "^6.0.0",
-        "body-parser": "^2.4.0",
-        "colors": "^1.4.0",
-        "crypto": "^1.0.1",
-        "dotenv": "^18.0.9",
-        "express": "^5.3.0",
-        "fs-extra": "^11.4.1",
-        "ip2location-nodejs": "^9.8.0",
-        "is-valid-hostname": "^1.0.2",
-        "jiti": "^2.7.0",
-        "lossless-json": "^4.3.3",
-        "moment": "^2.31.0",
-        "mongoose": "^9.11.4",
-        "mongoose-unique-validator": "^6.1.1",
-        "morgan": "^1.12.1",
-        "pako": "^3.0.3",
-        "parse-multipart-data": "^1.5.0",
-        "pino": "^10.4.0",
-        "pino-http": "^11.0.0",
-        "pino-pretty": "^13.2.0",
-        "rimraf": "^6.1.3",
-        "s3": "^4.4.0",
-        "yauzl-promise": "^4.0.0"
-    },
-    "devDependencies": {
-        "@eslint/js": "^10.0.1",
-        "@types/bcrypt": "^6.0.0",
-        "@types/node": "^24.19.2",
-        "eslint": "^10.14.0",
-        "globals": "^17.14.0",
-        "tsc-alias": "^1.9.10",
-        "typescript": "^5.9.3",
-        "typescript-eslint": "^8.72.1"
-    },
-    "allowScripts": {
-        "bcrypt@6.0.0": true
-    }
+  "name": "disney-infinity-api-wiiu",
+  "version": "1.0.0",
+  "description": "A revival for the Disney API used by Disney Infinity on Wii U",
+  "main": "dist/server.js",
+  "engines": {
+    "node": "^24.22.1"
+  },
+  "scripts": {
+    "build": "npm run clean && tsc && tsc-alias && npm run download-geoip-db",
+    "build-no-clean": "tsc && tsc-alias && npm run download-geoip-db",
+    "start": "node dist/server.js",
+    "clean": "rimraf ./dist",
+    "download-geoip-db": "node ./scripts/download-ip2location-databases.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/BDMCGaming/di-api-wiiu"
+  },
+  "author": "BDMCGaming",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1161.0",
+    "@types/express": "^5.0.6",
+    "@types/fs-extra": "^11.0.4",
+    "@types/morgan": "^1.9.10",
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.4.0",
+    "colors": "^1.4.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "fs-extra": "^11.4.1",
+    "ip2location-nodejs": "^9.8.0",
+    "is-valid-hostname": "^1.0.2",
+    "moment": "^2.31.0",
+    "mongoose": "^9.11.4",
+    "mongoose-unique-validator": "^6.1.1",
+    "morgan": "^1.12.1",
+    "parse-multipart-data": "^1.5.0",
+    "pino": "^10.4.0",
+    "pino-http": "^11.0.0",
+    "pino-pretty": "^13.2.0",
+    "rimraf": "^6.1.3",
+    "s3": "^4.4.0",
+    "yauzl-promise": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/node": "^24.19.2",
+    "tsc-alias": "^1.9.10",
+    "typescript": "^5.9.3"
+  },
+  "allowScripts": {
+    "bcrypt@6.0.0": true
+  }
 }
