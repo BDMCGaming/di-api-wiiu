@@ -1,7 +1,7 @@
 import express from 'express';
-import { HydratedInfinity1ToyboxDocument } from '@/types/mongoose/infinity-1-toybox'; 
+import { HydratedInfinity1ToyboxDocument } from '@/types/mongoose/infinity-1-toybox';
 import { Infinity1Toybox } from '@/models/infinity-1-toybox';
-import { getCDNFileStream, uploadCDNAsset } from '@/util'
+import { getCDNFileStream, uploadCDNAsset } from '@/util';
 import { connection as databaseConnection, getInfinity1ToyboxByID, getInfinity1UGCList } from '@/database';
 import moment from 'moment';
 import accountMiddleware from '@/middleware/account';
@@ -25,28 +25,28 @@ router.get('/infinity/ugc/v1/wiiu/public/toybox', accountMiddleware, async (requ
     const sortDirection = request.query.sort_direction as string;
 
     if (!page) {
-        return response.status(400).send()
+        return response.status(400).send();
     }
 
     if (!pageSize) {
-        return response.status(400).send()
+        return response.status(400).send();
     }
-    
+
     if (!sortField) {
-        return response.status(400).send()
+        return response.status(400).send();
     }
 
     if (!sortDirection) {
-        return response.status(400).send()
+        return response.status(400).send();
     }
 
-    let toyboxes = await getInfinity1UGCList(page, pageSize, null, "Public")
+    let toyboxes = await getInfinity1UGCList(page, pageSize, null, 'Public');
 
     if (!toyboxes) {
-        toyboxes = { items: [] }
+        toyboxes = { items: [] };
     }
 
-    return response.json({toyboxes})
+    return response.json({ toyboxes });
 });
 
 /**
@@ -73,53 +73,53 @@ router.post('/infinity/ugc/v1/wiiu/public/toybox', accountMiddleware, multipartM
     const platform = request.screenshotArgs.platform as number;
 
     // * There is no proper error handling like DID has. Just send an error code
-    if (name === undefined) { 
-        return response.status(400).send() 
-    };
-    if (desc === undefined) { 
-        return response.status(400).send() 
-    };
-    if (creator === undefined) { 
-        return response.status(400).send() 
-    };
-    if (originalSize === undefined) { 
-        return response.status(400).send() 
-    };
-    if (compressedSize === undefined) { 
-        return response.status(400).send() 
-    };
-    if (type === undefined) { 
-        return response.status(400).send() 
-    };
-    if (zone === undefined) { 
-        return response.status(400).send() 
-    };
-    if (locale === undefined) { 
-        return response.status(400).send() 
-    };
-    if (objectCounts === undefined) { 
-        return response.status(400).send() 
-    };
-    if (width === undefined) { 
-        return response.status(400).send() 
-    };
-    if (height === undefined) { 
-        return response.status(400).send() 
-    };
-    if (size === undefined) { 
-        return response.status(400).send() 
-    };
-    if (format === undefined) { 
-        return response.status(400).send() 
-    };
-    if (platform === undefined) { 
-        return response.status(400).send() 
-    };
-   
+    if (name === undefined) {
+        return response.status(400).send();
+    }
+    if (desc === undefined) {
+        return response.status(400).send();
+    }
+    if (creator === undefined) {
+        return response.status(400).send();
+    }
+    if (originalSize === undefined) {
+        return response.status(400).send();
+    }
+    if (compressedSize === undefined) {
+        return response.status(400).send();
+    }
+    if (type === undefined) {
+        return response.status(400).send();
+    }
+    if (zone === undefined) {
+        return response.status(400).send();
+    }
+    if (locale === undefined) {
+        return response.status(400).send();
+    }
+    if (objectCounts === undefined) {
+        return response.status(400).send();
+    }
+    if (width === undefined) {
+        return response.status(400).send();
+    }
+    if (height === undefined) {
+        return response.status(400).send();
+    }
+    if (size === undefined) {
+        return response.status(400).send();
+    }
+    if (format === undefined) {
+        return response.status(400).send();
+    }
+    if (platform === undefined) {
+        return response.status(400).send();
+    }
+
     // * At some point, we should try to validate the size with "orig_size". It doesn't seem to match up at all though.
 
     let toybox: HydratedInfinity1ToyboxDocument;
-    
+
     const session = await databaseConnection().startSession();
     await session.startTransaction();
     try {
@@ -135,28 +135,27 @@ router.post('/infinity/ugc/v1/wiiu/public/toybox', accountMiddleware, multipartM
             creation_date: moment().unix().toString(),
             object_counts: objectCounts,
             screenshot: request.screenshotArgs,
-            scope: "Public"
-        })
+            scope: 'Public',
+        });
 
         await toybox.generateID();
 
-        await uploadCDNAsset(`infinity-1-toyboxes/${toybox.creator}/${toybox.id}.bin`, request.file)
+        await uploadCDNAsset(`infinity-1-toyboxes/${toybox.creator}/${toybox.id}.bin`, request.file);
 
-        await uploadCDNAsset(`infinity-1-toyboxes/screenshots/${toybox.id}/screenshot.bin`, request.screenshot)
+        await uploadCDNAsset(`infinity-1-toyboxes/screenshots/${toybox.id}/screenshot.bin`, request.screenshot);
 
         await toybox.save({ session });
         await session.commitTransaction();
     } catch (error) {
         LOG_ERROR('[POST] /infinity/ugc/v1/wiiu/public/toybox: ' + error);
-        
+
         await session.abortTransaction();
 
         return response.status(503).send();
     }
 
-    return response.json({"_id": `${toybox.id}`, "name": name})
+    return response.json({ _id: `${toybox.id}`, name: name });
 });
-
 
 /**
  * [PUT]
@@ -166,7 +165,7 @@ router.post('/infinity/ugc/v1/wiiu/public/toybox', accountMiddleware, multipartM
 
 router.put('/infinity/ugc/v1/wiiu/public/toybox/:id', accountMiddleware, multipartMiddleware, async (request: express.Request, response: express.Response) => {
     const id = request.params.id as string;
-    
+
     const name = request.body.args.name as string;
     const desc = request.body.args.desc as string;
     const creator = request.body.args.creator as string;
@@ -184,49 +183,49 @@ router.put('/infinity/ugc/v1/wiiu/public/toybox/:id', accountMiddleware, multipa
     const platform = request.screenshotArgs.platform as number;
 
     // * There is no proper error handling like DID has. Just send an error code
-    if (name === undefined) { 
-        return response.status(400).send() 
-    };
-    if (desc === undefined) { 
-        return response.status(400).send() 
-    };
-    if (creator === undefined) { 
-        return response.status(400).send() 
-    };
-    if (originalSize === undefined) { 
-        return response.status(400).send() 
-    };
-    if (compressedSize === undefined) { 
-        return response.status(400).send() 
-    };
-    if (type === undefined) { 
-        return response.status(400).send() 
-    };
-    if (zone === undefined) { 
-        return response.status(400).send() 
-    };
-    if (locale === undefined) { 
-        return response.status(400).send() 
-    };
-    if (objectCounts === undefined) { 
-        return response.status(400).send() 
-    };
-    if (width === undefined) { 
-        return response.status(400).send() 
-    };
-    if (height === undefined) { 
-        return response.status(400).send() 
-    };
-    if (size === undefined) { 
-        return response.status(400).send() 
-    };
-    if (format === undefined) { 
-        return response.status(400).send() 
-    };
-    if (platform === undefined) { 
-        return response.status(400).send() 
-    };
-   
+    if (name === undefined) {
+        return response.status(400).send();
+    }
+    if (desc === undefined) {
+        return response.status(400).send();
+    }
+    if (creator === undefined) {
+        return response.status(400).send();
+    }
+    if (originalSize === undefined) {
+        return response.status(400).send();
+    }
+    if (compressedSize === undefined) {
+        return response.status(400).send();
+    }
+    if (type === undefined) {
+        return response.status(400).send();
+    }
+    if (zone === undefined) {
+        return response.status(400).send();
+    }
+    if (locale === undefined) {
+        return response.status(400).send();
+    }
+    if (objectCounts === undefined) {
+        return response.status(400).send();
+    }
+    if (width === undefined) {
+        return response.status(400).send();
+    }
+    if (height === undefined) {
+        return response.status(400).send();
+    }
+    if (size === undefined) {
+        return response.status(400).send();
+    }
+    if (format === undefined) {
+        return response.status(400).send();
+    }
+    if (platform === undefined) {
+        return response.status(400).send();
+    }
+
     // * At some point, we should try to validate the size with "orig_size". It doesn't seem to match up at all though.
 
     const toybox = await getInfinity1ToyboxByID(id);
@@ -236,7 +235,7 @@ router.put('/infinity/ugc/v1/wiiu/public/toybox/:id', accountMiddleware, multipa
     }
 
     if (toybox.creator != request.account!.username) {
-        return response.status(403).send()
+        return response.status(403).send();
     }
 
     const session = await databaseConnection().startSession();
@@ -254,25 +253,24 @@ router.put('/infinity/ugc/v1/wiiu/public/toybox/:id', accountMiddleware, multipa
             last_updated: moment().unix().toString(),
             object_counts: objectCounts,
             screenshot: request.screenshotArgs,
-            scope: "Private"
-        })
+            scope: 'Private',
+        });
 
+        await uploadCDNAsset(`infinity-1-toyboxes/${toybox.creator}/${toybox.id}.bin`, request.file);
 
-        await uploadCDNAsset(`infinity-1-toyboxes/${toybox.creator}/${toybox.id}.bin`, request.file)
-
-        await uploadCDNAsset(`infinity-1-toyboxes/screenshots/${toybox.id}/screenshot.bin`, request.screenshot)
+        await uploadCDNAsset(`infinity-1-toyboxes/screenshots/${toybox.id}/screenshot.bin`, request.screenshot);
 
         await toybox.save({ session });
         await session.commitTransaction();
     } catch (error) {
         LOG_ERROR(`[PUT] /infinity/ugc/v1/wiiu/public/toybox/${toybox.id}: ` + error);
-        
+
         await session.abortTransaction();
 
         return response.status(503).send();
     }
 
-    return response.json({"_id": `${toybox.id}`, "name": name})
+    return response.json({ _id: `${toybox.id}`, name: name });
 });
 
 /**
@@ -283,7 +281,7 @@ router.put('/infinity/ugc/v1/wiiu/public/toybox/:id', accountMiddleware, multipa
 
 router.get('/infinity/ugc/v1/wiiu/public/toybox/:id/screenshot', accountMiddleware, async (request: express.Request, response: express.Response) => {
     const id = request.params.id as string;
-    
+
     const toybox = await getInfinity1ToyboxByID(id);
 
     if (!toybox) {
@@ -296,7 +294,7 @@ router.get('/infinity/ugc/v1/wiiu/public/toybox/:id/screenshot', accountMiddlewa
         return response.status(204).send();
     }
 
-    response.setHeader("x-binary-metadata", JSON.stringify(toybox.screenshot));
+    response.setHeader('x-binary-metadata', JSON.stringify(toybox.screenshot));
     response.setHeader('Content-Type', 'application/octet-stream');
 
     screenshotStream.pipe(response);
@@ -310,14 +308,14 @@ router.get('/infinity/ugc/v1/wiiu/public/toybox/:id/screenshot', accountMiddlewa
 
 router.get('/infinity/ugc/v1/wiiu/public/toybox/:id/object_counts', accountMiddleware, async (request: express.Request, response: express.Response) => {
     const id = request.params.id as string;
-    
+
     const toybox = await getInfinity1ToyboxByID(id);
 
     if (!toybox) {
         return response.status(204).send();
     }
 
-    return response.json(toybox.object_counts)
+    return response.json(toybox.object_counts);
 });
 
 /**
@@ -328,7 +326,7 @@ router.get('/infinity/ugc/v1/wiiu/public/toybox/:id/object_counts', accountMiddl
 
 router.get('/infinity/ugc/v1/wiiu/public/toybox/:id', accountMiddleware, async (request: express.Request, response: express.Response) => {
     const id = request.params.id as string;
-    
+
     const toybox = await getInfinity1ToyboxByID(id);
 
     if (!toybox) {
