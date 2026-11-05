@@ -5,6 +5,7 @@ declare global {
 	namespace Express {
 		interface Request {
 			account?: HydratedAccountDocument | null;
+			rawBody: Buffer;
 			file: Buffer;
 			screenshot: Buffer;
 			screenshotArgs: screenshotArgs;

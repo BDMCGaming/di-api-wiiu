@@ -10,13 +10,20 @@ import geoiplocale from '@/services/api/capmon/getde'
 import privateugc from '@/services/api/infinity/ugc/v1/wiiu/private/index'
 import publicugc from '@/services/api/infinity/ugc/v1/wiiu/public/index'
 import stubs from '@/services/api/infinity/stubs'
+import profiles from '@/services/api/infinity/profile/v1/wiiu/index'
 
 import { config } from './config_manager'
+import rawBodyMiddleware from '@/middleware/raw-body';
 
 const { http: { port }} = config;
 const app = express();
 
 LOG_INFO('Setting up Middleware');
+app.use(express.raw({
+	type: '*/*',
+	verify(request: any, _response, buffer) {
+		request.rawBody = buffer;
+	}}));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.raw({
@@ -34,6 +41,7 @@ api.use(geoiplocale);
 api.use(privateugc);
 api.use(publicugc);
 api.use(stubs);
+api.use(profiles);
 
 app.use(api);
 

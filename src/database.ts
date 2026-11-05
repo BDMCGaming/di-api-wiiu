@@ -207,7 +207,7 @@ export async function getInfinity1UGCList(page: number, pageSize: number, userna
 			LOG_ERROR(`Error while fetching private toyboxes of user ${username}: ${error}`);
 			return null
 		}
-	}
+	};
 
 	return null
 
@@ -216,7 +216,7 @@ export async function getInfinity1UGCList(page: number, pageSize: number, userna
 export async function getInfinity1ToyboxByID(id: string): Promise<HydratedInfinity1ToyboxDocument | null> {
 	verifyConnected();
 
-	const toybox = Infinity1Toybox.findOne<HydratedInfinity1ToyboxDocument>({ id: id })
+	const toybox = Infinity1Toybox.findOne<HydratedInfinity1ToyboxDocument>({ id: id });
 
 	return toybox
 }
@@ -224,7 +224,7 @@ export async function getInfinity1ToyboxByID(id: string): Promise<HydratedInfini
 export async function getInfinity1ProfileBySWID(swid: string): Promise<HydratedInfinity1ProfileDocument | null> {
 	verifyConnected();
 
-	const profile = Infinity1Profile.findOne<HydratedInfinity1ProfileDocument>({ swid: swid})
+	const profile = Infinity1Profile.findOne<HydratedInfinity1ProfileDocument>({ swid: swid});
 
 	return profile
 }
