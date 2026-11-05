@@ -31,6 +31,6 @@ const tokenSchema = new Schema<dToken, dTokenModel, dTokenMethods>({
 
 tokenSchema.index({ 'info.expires': 1}, { expireAfterSeconds: 0 });
 tokenSchema.index({ token: 1 });
-tokenSchema.index({ pid: 1});
+tokenSchema.index({ swid: 1});
 
 export const token = model<dToken, dTokenModel>('Token', tokenSchema)
