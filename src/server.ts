@@ -13,7 +13,6 @@ import stubs from '@/services/api/infinity/stubs'
 import profiles from '@/services/api/infinity/profile/v1/wiiu/index'
 
 import { config } from './config_manager'
-import rawBodyMiddleware from '@/middleware/raw-body';
 
 const { http: { port }} = config;
 const app = express();

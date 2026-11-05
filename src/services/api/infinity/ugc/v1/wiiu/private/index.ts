@@ -230,8 +230,6 @@ router.put('/infinity/ugc/v1/wiiu/private/toybox/:id', accountMiddleware, multip
 
     const toybox = await getInfinity1ToyboxByID(id);
 
-    console.log`${id}`
-
     if (!toybox) {
         return response.status(204).send();
     }

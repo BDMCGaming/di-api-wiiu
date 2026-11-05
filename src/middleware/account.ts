@@ -26,9 +26,8 @@ async function accountMiddleware(request: express.Request, response: express.Res
     }
 
     const token = accessTokenHeader[1];
-    let account: HydratedAccountDocument | null = null;
 
-    account = await getAccountByToken(token)
+    const account = await getAccountByToken(token)
 
     if (!account) {
         response.status(401).json({message: "Invalid token"});

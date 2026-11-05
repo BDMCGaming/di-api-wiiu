@@ -2,7 +2,6 @@ import crypto from 'node:crypto';
 import path from 'node:path';
 import { GetObjectCommand, PutObjectCommand, S3 } from '@aws-sdk/client-s3';
 import fs from 'fs-extra';
-import express from 'express';
 import { config, disabledFeatures } from '@/config_manager';
 import { Readable } from 'node:stream';
 import { token } from '@/models/token'

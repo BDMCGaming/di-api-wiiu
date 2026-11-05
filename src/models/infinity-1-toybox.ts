@@ -1,6 +1,5 @@
-import { Schema, Types, model } from 'mongoose'
-import uniqueValidator from 'mongoose-unique-validator';
-import { HydratedInfinity1ToyboxDocument, dInfinity1Toybox, dInfinity1ToyboxMethods, infinity1ToyboxModel } from '@/types/mongoose/infinity-1-toybox'
+import { Schema, model } from 'mongoose';
+import { dInfinity1Toybox, dInfinity1ToyboxMethods, infinity1ToyboxModel } from '@/types/mongoose/infinity-1-toybox';
 
 const infinity1ToyboxSchema = new  Schema<dInfinity1Toybox, infinity1ToyboxModel, dInfinity1ToyboxMethods>({
     id: String,
