@@ -12,4 +12,4 @@ interface dTickerEntryQueryHelpers {}
 
 export interface TickerEntryModel extends Model<dTickerEntry, dTickerEntryQueryHelpers, dTickerEntryMethods> {}
 
-export type HydratedTickerEntryDocument = HydratedDocument<dTickerEntry, dTickerEntryMethods>
+export type HydratedTickerEntryDocument = HydratedDocument<dTickerEntry, dTickerEntryMethods>;

@@ -1,7 +1,7 @@
-export {}
+export {};
 
 declare global {
-  interface JSON {
-    rawJSON(text: string): any;
-  }
+    interface JSON {
+        rawJSON(text: string): any;
+    }
 }
